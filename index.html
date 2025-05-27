@@ -3,40 +3,6 @@
 <head>
     <title>EBHS GPA Calculator</title>
     <link rel="stylesheet" type="text/css" href="style.css">
-    <style>
-        /* CSS styles */
-        body {
-            background-color: #e9f5e2;
-            color: #155724;
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            margin: 0;
-            position: relative;
-        }
-
-        #site-branding {
-            display: flex;
-            align-items: center;
-        }
-
-        #site-logo {
-            width: 40px; /* Adjust the size of the logo as needed */
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .class-row {
-            display: flex;
-            justify-content: flex-start;
-        }
-
-        #final-grade-link {
-            text-align: center;
-            margin-top: 50px;
-        }
-    </style>
-
-    <!-- Add the following link tag to change the favicon -->
     <link rel="icon" type="image/png" href="EBPS_Seal_greenback_400x400.png">
 </head>
 <body>
@@ -44,35 +10,34 @@
         <img src="EBPS_Seal_greenback_400x400.png" alt="EBHS Logo" id="site-logo">
         EBHS GPA Calculator
     </div>
-    <a id="final-grade" href="final-grade.html">Final Grade Calculator</a>
-    
+
     <h1>EBHS GPA Calculator</h1>
-    <div style="margin-bottom: 20px;"></div>
+
+    <div id="class-controls">
+        <div id="add-class-container"></div>
+
+        <div id="class-counter">Number of classes: 0</div>
+    </div>
+
     <form id="calculatorForm" onsubmit="event.preventDefault(); calculateGPA();">
-        <label for="num-classes">Enter the number of classes:</label>
-        <input type="number" id="num-classes" name="num-classes" required>
-        
         <div id="class-details"></div>
-        
-        <button type="submit">Calculate GPA</button>
+        <div style="text-align: center; margin-top: 10px;">
+            <button type="submit">Calculate GPA</button>
+        </div>
     </form>
-    
+
     <div id="result">
         <h2 id="weighted-gpa"></h2>
         <h2 id="unweighted-gpa"></h2>
     </div>
 
-    <div id="contactMe">
-        <h2>Contact Me</h2>
-        <p>If you have any questions, suggestions, or feedback, feel free to reach out to me.</p>
-        <p>Email: sundayk15252@gmail.com</p>
-        <p>Discord: Walter White#7341</p>
+    <div id="comparison" style="display:none;">
+        <p id="ebhs-weighted"></p>
+        <p id="ebhs-unweighted"></p>
+        <p id="us-weighted"></p>
+        <p id="us-unweighted"></p>
     </div>
-    
-    <div id="final-grade-link">
-        <p>Don't know your final grade? <a href="final-grade.html" class="final-grade-link">Click here</a>.</p>
-    </div>
-    
+
     <script src="script.js"></script>
 </body>
 </html>

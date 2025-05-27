@@ -1,130 +1,177 @@
+let classCounter = 0;
+
 function calculateGPA() {
-    var academic_grades = {
-        "A+": 4.3, "A": 4.0, "A-": 3.7, "B+": 3.3, "B": 3.0, "B-": 2.7,
-        "C+": 2.3, "C": 2.0, "C-": 1.7, "D+": 1.3, "D": 1.0, "D-": 0.7, "F": 0.0
-    };
+  const academic_grades = {
+    "A+": 4.3, "A": 4.0, "A-": 3.7, "B+": 3.3, "B": 3.0, "B-": 2.7,
+    "C+": 2.3, "C": 2.0, "C-": 1.7, "D+": 1.3, "D": 1.0, "D-": 0.7, "F": 0.0
+  };
 
-    var num_classes = parseInt(document.getElementById("num-classes").value);
-    var total_grade_points_weighted = 0.0;
-    var total_grade_points_unweighted = 0.0;
-    var total_credits = 0.0;
+  let total_ebhs_weighted = 0;
+  let total_ebhs_unweighted = 0;
+  let total_us_weighted = 0;
+  let total_us_unweighted = 0;
+  let total_credits = 0;
 
-    for (var i = 1; i <= num_classes; i++) {
-        var class_type = document.getElementById("class-type-" + i).value;
-        var grade = document.getElementById("grade-" + i).value;
-        var credits = parseFloat(document.getElementById("credits-" + i).value);
+  const classes = document.querySelectorAll(".class-box");
+  classes.forEach(classDiv => {
+    const id = classDiv.id.split("-")[2];
+    const classType = document.getElementById(`class-type-${id}`).value;
+    const grade = document.getElementById(`grade-${id}`).value;
+    const credits = parseFloat(document.getElementById(`credits-${id}`).value);
 
-        var grade_value = 0.0;
+    if (isNaN(credits)) return;
 
-        if (class_type === "academic" || class_type === "honors" || class_type === "ap") {
-            grade_value = getGradeValue(class_type, grade);
-        }
+    const ebhsWeighted = getGradeValue(classType, grade);
+    const ebhsUnweighted = getGradeValue("academic", grade);
 
-        total_grade_points_weighted += grade_value * credits;
-        total_grade_points_unweighted += getGradeValue("academic", grade) * credits;
-        total_credits += credits;
-    }
+    total_ebhs_weighted += ebhsWeighted * credits;
+    total_ebhs_unweighted += ebhsUnweighted * credits;
 
-    var weighted_gpa = total_grade_points_weighted / total_credits;
-    var unweighted_gpa = total_grade_points_unweighted / total_credits;
+    const usWeighted = getUSGradeValue(classType, grade);
+    const usUnweighted = getUSGradeValue("academic", grade);
 
-    document.getElementById("weighted-gpa").textContent = "Weighted GPA: " + weighted_gpa.toFixed(4);
-    document.getElementById("unweighted-gpa").textContent = "Unweighted GPA: " + unweighted_gpa.toFixed(4);
+    total_us_weighted += usWeighted * credits;
+    total_us_unweighted += usUnweighted * credits;
+
+    total_credits += credits;
+  });
+
+  const ebhsWeightedGPA = total_ebhs_weighted / total_credits;
+  const ebhsUnweightedGPA = total_ebhs_unweighted / total_credits;
+  const usWeightedGPA = total_us_weighted / total_credits;
+  const usUnweightedGPA = total_us_unweighted / total_credits;
+
+  document.getElementById("weighted-gpa").textContent = "EBHS Weighted GPA: " + (ebhsWeightedGPA || 0).toFixed(4);
+  document.getElementById("unweighted-gpa").textContent = "EBHS Unweighted GPA: " + (ebhsUnweightedGPA || 0).toFixed(4);
+  document.getElementById("ebhs-weighted").textContent = "If this was the average US scale, Weighted GPA: " + (usWeightedGPA || 0).toFixed(4);
+  document.getElementById("ebhs-unweighted").textContent = "If this was the average US scale, Unweighted GPA: " + (usUnweightedGPA || 0).toFixed(4);
+  document.getElementById("us-weighted").textContent = "";
+  document.getElementById("us-unweighted").textContent = "";
 }
 
 function getGradeValue(class_type, grade) {
-    var grades = {
-        "academic": {
-            "A+": 4.3, "A": 4.0, "A-": 3.7, "B+": 3.3, "B": 3.0, "B-": 2.7,
-            "C+": 2.3, "C": 2.0, "C-": 1.7, "D+": 1.3, "D": 1.0, "D-": 0.7, "F": 0.0
-        },
-        "honors": {
-            "A+": 4.945, "A": 4.6, "A-": 4.255, "B+": 3.795, "B": 3.45, "B-": 3.105,
-            "C+": 2.645, "C": 2.3, "C-": 1.955, "D+": 1.338, "D": 1.15, "D-": 0.805, "F": 0.0
-        },
-        "ap": {
-            "A+": 5.375, "A": 5.0, "A-": 4.625, "B+": 4.125, "B": 3.75, "B-": 3.375,
-            "C+": 2.875, "C": 2.5, "C-": 2.125, "D+": 1.625, "D": 1.25, "D-": 0.875, "F": 0.0
-        }
-    };
-
-    return grades[class_type][grade];
+  const grades = {
+    "academic": {
+      "A+": 4.3, "A": 4.0, "A-": 3.7, "B+": 3.3, "B": 3.0, "B-": 2.7,
+      "C+": 2.3, "C": 2.0, "C-": 1.7, "D+": 1.3, "D": 1.0, "D-": 0.7, "F": 0.0
+    },
+    "honors": {
+      "A+": 4.945, "A": 4.6, "A-": 4.255, "B+": 3.795, "B": 3.45, "B-": 3.105,
+      "C+": 2.645, "C": 2.3, "C-": 1.955, "D+": 1.338, "D": 1.15, "D-": 0.805, "F": 0.0
+    },
+    "ap": {
+      "A+": 5.375, "A": 5.0, "A-": 4.625, "B+": 4.125, "B": 3.75, "B-": 3.375,
+      "C+": 2.875, "C": 2.5, "C-": 2.125, "D+": 1.625, "D": 1.25, "D-": 0.875, "F": 0.0
+    }
+  };
+  return grades[class_type]?.[grade] ?? 0.0;
 }
 
-document.getElementById("num-classes").addEventListener("input", function () {
-    var numClasses = parseInt(this.value);
-    var classDetails = document.getElementById("class-details");
+function getUSGradeValue(class_type, grade) {
+  const baseGrades = { "A": 4.0, "B": 3.0, "C": 2.0, "D": 1.0, "F": 0.0 };
+  const baseGradeLetter = grade[0];
+  let baseValue = baseGrades[baseGradeLetter] ?? 0.0;
+  let weightedBoost = 0;
+  if (class_type === "honors") weightedBoost = 0.5;
+  else if (class_type === "ap") weightedBoost = 1.0;
+  return baseValue + weightedBoost;
+}
 
-    // Clear existing class details
-    classDetails.innerHTML = "";
+function updateClassCounter() {
+  const counterDisplay = document.getElementById("class-counter");
+  const classes = document.querySelectorAll(".class-box");
+  counterDisplay.textContent = `Number of classes: ${classes.length}`;
+  classes.forEach((classDiv, index) => {
+    const title = classDiv.querySelector("h3");
+    title.textContent = `Class ${index + 1}`;
+  });
+}
 
-    for (var i = 1; i <= numClasses; i++) {
-        var classDiv = document.createElement("div");
-        classDiv.classList.add("class-box"); // Add class-box class for styling
+function addClass() {
+  classCounter++;
+  const i = classCounter;
+  const classDetails = document.getElementById("class-details");
 
-        var classTitle = document.createElement("h3");
-        classTitle.textContent = "Class " + i;
-        classDiv.appendChild(classTitle);
+  const classDiv = document.createElement("div");
+  classDiv.classList.add("class-box");
+  classDiv.id = `class-box-${i}`;
 
-        var classTypeLabel = document.createElement("label");
-        classTypeLabel.textContent = "Class Type (Academic, Honors, AP): ";
-        var classTypeInput = document.createElement("select");
-        classTypeInput.id = "class-type-" + i;
-        classTypeInput.required = true;
+  const title = document.createElement("h3");
+  title.textContent = `Class ${i}`;
+  classDiv.appendChild(title);
 
-        var classTypeOptions = ["Academic", "Honors", "AP"];
+  // Class Type
+  const typeLabel = document.createElement("label");
+  typeLabel.textContent = "Class Type (Academic, Honors, AP): ";
+  typeLabel.setAttribute("for", `class-type-${i}`);
+  const typeSelect = document.createElement("select");
+  typeSelect.id = `class-type-${i}`;
+  typeSelect.required = true;
+  ["Academic", "Honors", "AP"].forEach(type => {
+    const opt = document.createElement("option");
+    opt.value = type.toLowerCase();
+    opt.textContent = type;
+    typeSelect.appendChild(opt);
+  });
+  classDiv.appendChild(typeLabel);
+  classDiv.appendChild(typeSelect);
 
-        for (var j = 0; j < classTypeOptions.length; j++) {
-            var option = document.createElement("option");
-            option.value = classTypeOptions[j].toLowerCase();
-            option.text = classTypeOptions[j];
-            classTypeInput.appendChild(option);
-        }
+  // Grade
+  const gradeLabel = document.createElement("label");
+  gradeLabel.textContent = "Grade Received: ";
+  gradeLabel.setAttribute("for", `grade-${i}`);
+  const gradeSelect = document.createElement("select");
+  gradeSelect.id = `grade-${i}`;
+  gradeSelect.required = true;
+  ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F"].forEach(grade => {
+    const opt = document.createElement("option");
+    opt.value = grade;
+    opt.textContent = grade;
+    gradeSelect.appendChild(opt);
+  });
+  classDiv.appendChild(gradeLabel);
+  classDiv.appendChild(gradeSelect);
 
-        classDiv.appendChild(classTypeLabel);
-        classDiv.appendChild(classTypeInput);
+  // Credits (fixed missing label)
+  const creditLabel = document.createElement("label");
+  creditLabel.textContent = "Credits: ";
+  creditLabel.setAttribute("for", `credits-${i}`);
+  const creditInput = document.createElement("input");
+  creditInput.type = "number";
+  creditInput.min = "0";
+  creditInput.step = "0.25";
+  creditInput.id = `credits-${i}`;
+  creditInput.required = true;
+  creditInput.value = "";
+  classDiv.appendChild(creditLabel);
+  classDiv.appendChild(creditInput);
 
-        var gradeLabel = document.createElement("label");
-        gradeLabel.textContent = "Grade Received: ";
-        var gradeInput = document.createElement("select");
-        gradeInput.id = "grade-" + i;
-        gradeInput.required = true;
+  classDiv.appendChild(document.createElement("br"));
 
-        var gradeOptions = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F"];
+  const removeBtn = document.createElement("button");
+  removeBtn.type = "button";
+  removeBtn.textContent = "Remove";
+  removeBtn.addEventListener("click", () => {
+    classDiv.remove();
+    updateClassCounter();
+  });
+  classDiv.appendChild(removeBtn);
 
-        for (var k = 0; k < gradeOptions.length; k++) {
-            var option = document.createElement("option");
-            option.value = gradeOptions[k];
-            option.text = gradeOptions[k];
-            gradeInput.appendChild(option);
-        }
+  classDetails.appendChild(classDiv);
+  updateClassCounter();
+}
 
-        classDiv.appendChild(gradeLabel);
-        classDiv.appendChild(gradeInput);
+document.getElementById("add-class-container").innerHTML = `<button type="button" id="add-class-btn">Add Class</button>`;
+document.getElementById("add-class-btn").addEventListener("click", addClass);
 
-        var creditsLabel = document.createElement("label");
-        creditsLabel.textContent = "Credits: ";
-        var creditsInput = document.createElement("input");
-        creditsInput.type = "number";
-        creditsInput.id = "credits-" + i;
-        creditsInput.required = true;
-        creditsInput.step = "0.01";
-
-        classDiv.appendChild(creditsLabel);
-        classDiv.appendChild(creditsInput);
-
-        var removeClassBtn = document.createElement("button");
-        removeClassBtn.classList.add("remove-class-btn"); // Add remove-class-btn class for styling
-        removeClassBtn.textContent = "Remove Class";
-        removeClassBtn.addEventListener("click", function () {
-            classDiv.classList.add("hidden");
-            setTimeout(function () {
-                classDiv.remove();
-            }, 300);
-        });
-
-        classDiv.appendChild(removeClassBtn);
-
-        classDetails.appendChild(classDiv);
-    }
+document.getElementById("show-comparison").addEventListener("change", (e) => {
+  const compDiv = document.getElementById("comparison");
+  if (e.target.checked) {
+    compDiv.style.display = "block";
+  } else {
+    compDiv.style.display = "none";
+  }
 });
+
+
+addClass();
