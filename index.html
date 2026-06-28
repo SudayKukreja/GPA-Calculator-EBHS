@@ -1,43 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>EBHS GPA Calculator</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="icon" type="image/png" href="EBPS_Seal_greenback_400x400.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EBHS GPA Calculator</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/png" href="EBPS_Seal_greenback_400x400.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
 </head>
 <body>
-    <div id="site-branding">
-        <img src="EBPS_Seal_greenback_400x400.png" alt="EBHS Logo" id="site-logo">
-        EBHS GPA Calculator
+
+  <!-- Top Bar -->
+  <header class="top-bar">
+    <div class="branding">
+      <img src="EBPS_Seal_greenback_400x400.png" alt="EBHS Logo" class="logo" />
+      <span class="school-name">East Brunswick High School</span>
     </div>
+  </header>
 
-    <h1>EBHS GPA Calculator</h1>
+  <!-- Hero -->
+  <section class="hero">
+    <h1>GPA Calculator</h1>
+    <p class="hero-sub">Official EBHS grading scale · Academic, Accelerated, Honors &amp; AP</p>
+  </section>
 
-    <div id="class-controls">
-        <div id="add-class-container"></div>
-
-        <div id="class-counter">Number of classes: 0</div>
+  <!-- Controls -->
+  <main class="container">
+    <div class="controls-bar">
+      <div id="add-class-container"></div>
+      <span id="class-counter" class="class-counter">0 classes</span>
+      <label class="toggle-label">
+        <input type="checkbox" id="show-comparison" />
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        Show US scale comparison
+      </label>
     </div>
 
     <form id="calculatorForm" onsubmit="event.preventDefault(); calculateGPA();">
-        <div id="class-details"></div>
-        <div style="text-align: center; margin-top: 10px;">
-            <button type="submit">Calculate GPA</button>
-        </div>
+      <div id="class-details" class="class-grid"></div>
+
+      <div class="submit-row">
+        <button type="submit" class="btn-primary">Calculate GPA</button>
+      </div>
     </form>
 
-    <div id="result">
-        <h2 id="weighted-gpa"></h2>
-        <h2 id="unweighted-gpa"></h2>
+    <!-- Results -->
+    <div id="result" style="display:none;">
+      <div class="result-grid">
+        <div class="result-card">
+          <span class="result-label">Weighted GPA</span>
+          <h2 id="weighted-gpa" class="result-value"></h2>
+          <span class="result-sub">EBHS Scale</span>
+        </div>
+        <div class="result-card">
+          <span class="result-label">Unweighted GPA</span>
+          <h2 id="unweighted-gpa" class="result-value"></h2>
+          <span class="result-sub">EBHS Scale</span>
+        </div>
+      </div>
     </div>
 
+    <!-- US Comparison -->
     <div id="comparison" style="display:none;">
+      <div class="comparison-box">
+        <h3 class="comparison-title">US National Scale Equivalent</h3>
         <p id="ebhs-weighted"></p>
         <p id="ebhs-unweighted"></p>
         <p id="us-weighted"></p>
         <p id="us-unweighted"></p>
+      </div>
     </div>
 
-    <script src="script.js"></script>
+  </main>
+
+  <footer class="site-footer">
+    <span>&copy; <span id="yr"></span> EBHS GPA Calculator</span>
+  </footer>
+
+  <script>document.getElementById("yr").textContent = new Date().getFullYear();</script>
+  <script src="script.js"></script>
 </body>
 </html>
